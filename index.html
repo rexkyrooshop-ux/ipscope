@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#081426">
+<meta name="description" content="IP Address Lookup — cek lokasi, ISP, ASN, dan reputasi alamat IP dari beberapa sumber.">
+<title>IPScope — IP Address Lookup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07101f;--panel:#101d32;--panel2:#0b172a;--line:#233d5a;--cyan:#4ce4ff;--blue:#328dff;--text:#edf6ff;--muted:#9eb2c9;--pink:#ff8cae;--good:#65e6b0;--bad:#ff7891}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}input,textarea{ -webkit-user-select:text;user-select:text }html{scroll-behavior:smooth}body{margin:0;color:var(--text);font-family:"DM Sans",sans-serif;background:radial-gradient(ellipse at 15% 0%,#12345a 0,transparent 34%),radial-gradient(ellipse at 90% 25%,#102b50 0,transparent 28%),var(--bg);min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(#6ccfff15 1px,transparent 1px),linear-gradient(90deg,#6ccfff15 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,black,transparent 85%);z-index:-1}
+.orb{position:fixed;width:240px;height:240px;border-radius:50%;filter:blur(75px);opacity:.18;pointer-events:none;z-index:-1}.orb.a{background:#00d9ff;top:38%;left:-120px}.orb.b{background:#246bff;right:-140px;top:65%}
+.wrap{width:min(1080px,calc(100% - 30px));margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;padding:25px 0 30px;gap:14px}.brand{display:flex;align-items:center;gap:12px;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:23px;letter-spacing:-.7px}.brandmark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:#061322;background:linear-gradient(145deg,#80f2ff,#318eff);box-shadow:0 0 24px #35d8ff30;font-size:22px}.brand span{color:var(--cyan)}.status{display:flex;align-items:center;gap:8px;color:#c7d8e9;border:1px solid #2a4964;background:#0b1b2d99;border-radius:999px;padding:9px 13px;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 12px var(--good)}
+.hero{text-align:center;padding:26px 0 24px}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-weight:700;font-size:11px;letter-spacing:2.3px;text-transform:uppercase;border:1px solid #2c7b9c70;background:#09243a99;border-radius:999px;padding:9px 13px}.hero h1{font:700 clamp(34px,7vw,60px)/1.08 "Space Grotesk",sans-serif;letter-spacing:-2.4px;margin:20px 0 14px}.hero h1 em{font-style:normal;background:linear-gradient(90deg,#fff 10%,#6deaff 52%,#6a9dff);background-clip:text;-webkit-background-clip:text;color:transparent}.hero p{max-width:610px;margin:0 auto;color:var(--muted);font-size:15px;line-height:1.75}
+.panel{position:relative;border:1px solid #2a4e6d;background:linear-gradient(140deg,#12223aef,#0b1729f5 72%);border-radius:22px;padding:clamp(19px,4vw,34px);box-shadow:0 18px 55px #0004;overflow:hidden;margin:18px 0 24px}.panel:before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,#5deaff,transparent);box-shadow:0 0 15px #45dfff}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.panelhead h2{font:600 18px "Space Grotesk",sans-serif;margin:0}.tiny{color:var(--muted);font-size:12px}
+.searchrow{display:flex;gap:11px}.inputwrap{position:relative;flex:1;min-width:0}.inputwrap input{width:100%;height:58px;border-radius:13px;border:1px solid #365675;background:#071224;color:white;padding:0 17px;font:500 15px "DM Sans",sans-serif;outline:none;transition:.2s}.inputwrap input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #4ce4ff19,0 0 20px #4ce4ff12}.inputwrap input::placeholder{color:#718aa5}.btn{border:0;border-radius:13px;padding:0 22px;min-height:54px;background:linear-gradient(120deg,#5ceaff,#3c9eff 70%,#397bfa);color:#041426;font:700 14px "DM Sans",sans-serif;cursor:pointer;box-shadow:0 7px 24px #28bff52a;transition:transform .18s,filter .18s;white-space:nowrap}.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:wait;transform:none}.secondary{color:#cfe9ff;background:#172c45;border:1px solid #35516d;box-shadow:none;min-height:39px;padding:0 13px;font-size:12px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.helper{font-size:12px;color:var(--muted);margin:14px 0 0;line-height:1.6}.notice{display:none;margin-top:15px;padding:12px 14px;border-radius:11px;font-size:13px;line-height:1.5}.notice.error{display:block;background:#3a1928;border:1px solid #74324a;color:#ffb9c7}.notice.info{display:block;background:#102a3e;border:1px solid #2b607b;color:#b9edff}
+.results{display:none}.sectiontitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:32px 0 14px}.sectiontitle h2{font:600 21px "Space Grotesk",sans-serif;margin:0}.sectiontitle p{color:var(--muted);font-size:12px;margin:5px 0 0}.iphero{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.label{color:var(--pink);font-weight:700;font-size:11px;letter-spacing:1.4px;text-transform:uppercase}.ipvalue{font:600 clamp(23px,5vw,36px) "Space Grotesk",sans-serif;letter-spacing:1px;margin:12px 0 5px;overflow-wrap:anywhere}.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:10px;background:#061122;border:1px solid #253e5c;color:#9feaff;font-size:11px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:20px}.data-card{position:relative;min-width:0;padding:19px;border:1px solid #203b58;border-radius:15px;background:linear-gradient(145deg,#071326,#0b1a30);overflow:hidden}.data-card:after{content:"";position:absolute;right:-25px;top:-35px;width:80px;height:80px;border-radius:50%;border:1px solid #3ccffb20;box-shadow:0 0 30px #2dbfff0a}.data-card .label{font-size:10px;color:#77dfff;letter-spacing:1.2px}.value{font-size:15px;font-weight:600;line-height:1.5;margin-top:10px;overflow-wrap:anywhere}.subvalue{font-size:11px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
+.sources{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.source{border:1px solid #23415d;background:#0a1729;border-radius:15px;padding:17px;min-width:0}.sourcehead{display:flex;justify-content:space-between;align-items:center;gap:8px}.source h3{font:600 14px "Space Grotesk",sans-serif;margin:0}.badge{font-size:10px;border-radius:999px;padding:5px 8px;background:#193149;color:#bdd5e9;white-space:nowrap}.badge.ok{background:#10352f;color:#8df2ce}.badge.fail{background:#3c1c2b;color:#ffafc0}.sourcebody{font-size:12px;color:#b5c8db;line-height:1.65;margin-top:12px;overflow-wrap:anywhere}.sourcebody strong{color:#f1f7ff}.repbox{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.repbox p{color:var(--muted);font-size:13px;line-height:1.6;max-width:650px;margin:8px 0 0}.footer{padding:28px 0 35px;color:#7890a9;font-size:11px;line-height:1.8;text-align:center}.footer strong{color:#b9d7ed}.spinner{display:inline-block;width:14px;height:14px;border:2px solid #06142655;border-top-color:#061426;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}.live{animation:pulse 2s infinite}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sources{grid-template-columns:1fr}.hero{padding-top:14px}.hero h1{letter-spacing:-1.4px}.topbar{padding-top:18px}.status{font-size:10px}.searchrow{flex-direction:column}.btn.searchbtn{width:100%;height:53px}.panel{border-radius:18px}.sectiontitle{align-items:flex-start}}
+@media(max-width:390px){.grid{grid-template-columns:1fr}.brand{font-size:20px}.brandmark{width:37px;height:37px}}
+</style>
+</head>
+<body>
+<div class="orb a"></div><div class="orb b"></div>
+<div class="wrap">
+<header class="topbar">
+  <div class="brand"><div class="brandmark">⌁</div><div>IP<span>Scope</span></div></div>
+  <div class="status"><span class="dot live"></span> MULTI-SOURCE LOOKUP</div>
+</header>
+<section class="hero">
+  <div class="eyebrow">⌖ &nbsp; IP ADDRESS INTELLIGENCE</div>
+  <h1>Know your <em>IP address.</em></h1>
+  <p>Periksa informasi alamat IP dari beberapa sumber geolokasi. Bandingkan lokasi, jaringan, ISP, ASN, dan data teknis dalam satu dashboard.</p>
+</section>
+
+<section class="panel">
+  <div class="panelhead"><h2>IP Address Lookup</h2><span class="tiny">IPv4 · IPv6 · Domain</span></div>
+  <form id="lookupForm">
+    <div class="searchrow">
+      <div class="inputwrap"><input id="ipInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Masukkan IP atau domain, contoh: 8.8.8.8" aria-label="Alamat IP atau domain"></div>
+      <button id="lookupBtn" class="btn searchbtn" type="submit">Periksa Alamat ↗</button>
+    </div>
+  </form>
+  <div class="actions">
+    <button id="myIpBtn" class="btn secondary" type="button">◎ Deteksi IP Saya</button>
+    <button id="clearBtn" class="btn secondary" type="button">Bersihkan</button>
+  </div>
+  <p class="helper">Hasil berasal dari layanan pihak ketiga. Data lokasi IP bersifat perkiraan dan bisa berbeda antar-provider.</p>
+  <div id="notice" class="notice" role="status"></div>
+</section>
+
+<div id="results" class="results">
+  <section class="panel">
+    <div class="iphero">
+      <div><div class="label">Alamat IP yang diperiksa</div><div id="resultIp" class="ipvalue">—</div><div id="resultLocation" class="tiny">Menunggu hasil...</div></div>
+      <div><span id="countryPill" class="pill">◉ Lokasi belum tersedia</span><button id="copyBtn" class="btn secondary" style="display:block;margin-top:10px;width:100%" type="button">Salin IP</button></div>
+    </div>
+  </section>
+  <div class="sectiontitle"><div><h2>Informasi IP</h2><p>Data gabungan dari provider yang berhasil merespons.</p></div><span class="pill">LIVE DATA</span></div>
+  <div id="detailGrid" class="grid"></div>
+  <div class="sectiontitle"><div><h2>Perbandingan 10 Provider IP</h2><p>Kesepuluh provider dipanggil bersamaan. Hasil dan status masing-masing tampil di card ini.</p></div></div>
+  <div id="sourceGrid" class="sources"></div>
+</div>
+<footer class="footer"><strong>IPScope</strong> · IP Address Lookup<br>Jangan gunakan hasil geolokasi untuk menentukan alamat fisik seseorang. IP publik juga dapat berubah karena VPN, proxy, jaringan seluler, atau ISP.</footer>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const form = $('lookupForm'), input = $('ipInput'), lookupBtn = $('lookupBtn');
+let currentIP = '';
+function showNotice(message, type='info') { const el=$('notice'); el.textContent=message; el.className='notice '+type; }
+function clearNotice(){ $('notice').className='notice'; $('notice').textContent=''; }
+function val(v){ return (v===undefined || v===null || v==='' || v==='-') ? 'Tidak tersedia' : String(v); }
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function addCard(label,value,sub=''){return `<article class="data-card"><div class="label">${escapeHTML(label)}</div><div class="value">${escapeHTML(val(value))}</div>${sub?`<div class="subvalue">${escapeHTML(sub)}</div>`:''}</article>`;}
+async function fetchJSON(url, options={}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 10000);
+  try {
+    const res = await fetch(url,{...options,signal:controller.signal,headers:{'Accept':'application/json',...(options.headers||{})},cache:'no-store'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } finally { clearTimeout(timeout); }
+}
+function normalizeInput(raw){
+  let s=raw.trim();
+  if(!s) return '';
+  s=s.replace(/^https?:\/\//i,'').split('/')[0].split('?')[0].split('#')[0];
+  return s.replace(/:\d+$/,'');
+}
+function looksLikeDomainOrIP(s){
+  if(s.length>253 || /\s/.test(s)) return false;
+  // IPv4; IPv6; or a domain/hostname. The provider validates the final address.
+  if(/^[0-9.]+$/.test(s) || s.includes(':')) return true;
+  return /^(?=.{1,253}$)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(\.([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*$/.test(s) && s.includes('.');
+}
+function first(...xs){return xs.find(x=>x!==undefined&&x!==null&&x!=='') ?? 'Tidak tersedia';}
+function renderSource(name, data, err){
+  if(err) return `<article class="source"><div class="sourcehead"><h3>${name}</h3><span class="badge fail">Gagal</span></div><div class="sourcebody">${escapeHTML(err)}<br><span style="color:#7892ab">Coba lagi nanti; provider bisa membatasi permintaan.</span></div></article>`;
+  const location = [data.city,data.region || data.stateProv,data.country_name || data.countryName || data.country].filter(Boolean).join(', ');
+  const isp = first(data.org,data.isp,data.connection?.isp,data.organization);
+  return `<article class="source"><div class="sourcehead"><h3>${name}</h3><span class="badge ok">Berhasil</span></div><div class="sourcebody"><strong>Lokasi</strong><br>${escapeHTML(val(location))}<br><br><strong>ISP / Organisasi</strong><br>${escapeHTML(val(isp))}<br><br><strong>ASN</strong><br>${escapeHTML(val(first(data.asn,data.connection?.asn)))}</div></article>`;
+}
+function regionLabel(value, countryCode=''){
+  if(!value || value==='Tidak tersedia') return 'Tidak tersedia';
+  const raw=String(value).trim();
+  const aliases={
+    'West Java':'Jawa Barat','Jawa Barat':'West Java',
+    'Central Java':'Jawa Tengah','Jawa Tengah':'Central Java',
+    'East Java':'Jawa Timur','Jawa Timur':'East Java',
+    'Special Capital Region of Jakarta':'DKI Jakarta','Jakarta':'DKI Jakarta',
+    'Banten':'Banten','Bali':'Bali','North Sumatra':'Sumatera Utara',
+    'South Sumatra':'Sumatera Selatan','Yogyakarta':'DI Yogyakarta',
+    'Special Region of Yogyakarta':'DI Yogyakarta','East Kalimantan':'Kalimantan Timur',
+    'West Kalimantan':'Kalimantan Barat','South Sulawesi':'Sulawesi Selatan',
+    'North Sulawesi':'Sulawesi Utara','Riau':'Riau','Lampung':'Lampung'
+  };
+  if(countryCode==='ID' || countryCode==='Indonesia'){
+    const english=aliases[raw] || raw;
+    const indoToEnglish=Object.fromEntries(Object.entries(aliases).map(([a,b])=>[b,a]));
+    const indo=aliases[raw] && ['West Java','Central Java','East Java','Special Capital Region of Jakarta','North Sumatra','South Sumatra','East Kalimantan','West Kalimantan','South Sulawesi','North Sulawesi'].includes(aliases[raw]) ? raw : (indoToEnglish[raw] ? raw : english);
+    return `${english} (${indo})`;
+  }
+  return raw;
+}
+function pickObj(obj, paths){
+  for(const path of paths){
+    const v=path.split('.').reduce((o,k)=>o?.[k],obj);
+    if(v!==undefined && v!==null && v!=='') return v;
+  }
+  return 'Tidak tersedia';
+}
+function normalizeProvider(name, raw){
+  let d=raw?.data || raw || {};
+  if(name==='ipapi.co') return {ip:d.ip, country:d.country_name, countryCode:d.country_code, region:d.region, city:d.city, org:d.org, asn:d.asn, timezone:d.timezone, postal:d.postal, lat:d.latitude, lon:d.longitude, continent:d.continent_code};
+  if(name==='ipwho.is') return {ip:d.ip,country:d.country,countryCode:d.country_code,region:d.region,city:d.city,org:pickObj(d,['connection.isp','connection.org']),asn:pickObj(d,['connection.asn']),timezone:pickObj(d,['timezone.id']),postal:d.postal,lat:d.latitude,lon:d.longitude,continent:d.continent};
+  if(name==='IPAddress.to') return {ip:pickObj(d,['ipAddress','ip']),country:pickObj(d,['countryName','location.country']),countryCode:pickObj(d,['countryCode','location.country_code']),region:pickObj(d,['stateProv','location.region']),city:pickObj(d,['city','location.city']),org:pickObj(d,['organization','network.organization','network.isp']),asn:pickObj(d,['asn','network.asn.number']),timezone:pickObj(d,['timeZone','timezone','location.timezone']),postal:pickObj(d,['zipCode','location.postal_code']),lat:pickObj(d,['latitude','location.latitude']),lon:pickObj(d,['longitude','location.longitude']),continent:pickObj(d,['continentCode','location.continent'])};
+  if(name==='ipinfo.io') return {ip:d.ip,country:d.country,countryCode:d.country,region:d.region,city:d.city,org:d.org,asn:d.org,timezone:d.timezone,postal:d.postal,lat:d.loc?.split(',')[0],lon:d.loc?.split(',')[1],continent:'Tidak tersedia'};
+  if(name==='FreeIPAPI') return {ip:d.ipAddress||d.ip,country:d.countryName,countryCode:d.countryCode,region:d.regionName||d.region,city:d.cityName||d.city,org:d.asnOrganization||d.isp,asn:d.asn,timezone:d.timeZone,postal:d.zipCode,lat:d.latitude,lon:d.longitude,continent:d.continent};
+  if(name==='IPQuery') return {ip:d.ip,country:d.location?.country,countryCode:d.location?.country_code,region:d.location?.state,city:d.location?.city,org:d.isp?.org||d.isp?.isp,asn:d.isp?.asn,timezone:d.location?.timezone,postal:d.location?.zip,lat:d.location?.latitude,lon:d.location?.longitude,continent:d.location?.continent};
+  if(name==='ipapi.is') return {ip:d.ip,country:d.location?.country,countryCode:d.location?.country_code,region:d.location?.state,city:d.location?.city,org:d.company?.name||d.asn?.org,asn:d.asn?.asn,timezone:d.location?.timezone,postal:d.location?.zip,lat:d.location?.latitude,lon:d.location?.longitude,continent:d.location?.continent};
+  if(name==='DB-IP') return {ip:d.ipAddress,country:d.countryName,countryCode:d.countryCode,region:d.stateProv,city:d.city,org:d.organization,asn:d.asn,timezone:d.timeZone,postal:d.zipCode,lat:d.latitude,lon:d.longitude,continent:d.continentCode};
+  if(name==='ip-api.com') return {ip:d.query,country:d.country,countryCode:d.countryCode,region:d.regionName,city:d.city,org:d.org||d.isp,asn:d.as,timezone:d.timezone,postal:d.zip,lat:d.lat,lon:d.lon,continent:'Tidak tersedia'};
+  if(name==='IPGeolocation') return {ip:d.ip,country:d.country_name,countryCode:d.country_code2,region:d.state_prov,city:d.city,org:d.organization||d.isp,asn:d.asn,timezone:d.time_zone?.name,postal:d.zipcode,lat:d.latitude,lon:d.longitude,continent:d.continent_name};
+  return d;
+}
+const liveProviders = [
+  {name:'IP2Location'}, {name:'DB-IP'}, {name:'ipapi.co'}, {name:'ipapi.is'},
+  {name:'IPbase'}, {name:'IPdata'}, {name:'IPGeolocation.io'}, {name:'IPinfo'},
+  {name:'IPlocate'}, {name:'IPregistry'}
+];
+function sourceCard(provider, result){
+  const d=result.data;
+  if(result.error) return `<article class="source"><div class="sourcehead"><h3>${escapeHTML(provider.name)}</h3><span class="badge fail">Tidak tersedia</span></div><div class="sourcebody">${escapeHTML(result.error)}<br><span style="color:#7892ab">Provider mungkin memerlukan API key, membatasi penggunaan, atau sedang tidak tersedia.</span></div></article>`;
+  const region=regionLabel(d.region,d.countryCode);
+  const location=[d.city,region,d.country].filter(v=>v && v!=='Tidak tersedia').join(', ');
+  return `<article class="source"><div class="sourcehead"><h3>${escapeHTML(provider.name)}</h3><span class="badge ok">Berhasil</span></div><div class="sourcebody"><strong>Lokasi</strong><br>${escapeHTML(val(location))}<br><br><strong>ISP / Organisasi</strong><br>${escapeHTML(val(d.org))}<br><br><strong>ASN</strong><br>${escapeHTML(val(d.asn))}<br><br><strong>Zona waktu</strong><br>${escapeHTML(val(d.timezone))}</div></article>`;
+}
+async function lookup(raw){
+  const query=normalizeInput(raw);
+  if(!query){showNotice('Masukkan alamat IP atau domain terlebih dahulu.','error');input.focus();return;}
+  if(!looksLikeDomainOrIP(query)){showNotice('Format IP atau domain terlihat tidak valid. Periksa kembali input kamu.','error');return;}
+  clearNotice(); lookupBtn.disabled=true; $('myIpBtn').disabled=true;
+  lookupBtn.innerHTML='<span class="spinner"></span>Memeriksa...';
+  $('results').style.display='block';
+  $('resultIp').textContent=query;$('resultLocation').textContent='Mengambil data dari backend dan 10 provider...';
+  $('countryPill').textContent='◌ Memuat data';$('detailGrid').innerHTML='';
+  $('sourceGrid').innerHTML=liveProviders.map(p=>`<article class="source"><div class="sourcehead"><h3>${escapeHTML(p.name)}</h3><span class="badge">Memuat</span></div><div class="sourcebody">Sedang meminta data...</div></article>`).join('');
+  $('results').scrollIntoView({behavior:'smooth',block:'start'});
+  try{
+    const payload=await fetchJSON(`/api/lookup?ip=${encodeURIComponent(query)}`);
+    const tasks=liveProviders.map(p=>payload.providers?.[p.name] || {error:'Provider tidak mengembalikan hasil'});
+    const successful=tasks.filter(t=>t.data);
+    const preferred=successful.map(t=>t.data).find(d=>d.ip) || successful[0]?.data || {};
+    const resolvedIP=first(...successful.map(t=>t.data.ip),query);
+    const country=first(preferred.country,successful.map(t=>t.data.country).find(Boolean));
+    const region=first(preferred.region && regionLabel(preferred.region,preferred.countryCode),successful.map(t=>regionLabel(t.data.region,t.data.countryCode)).find(x=>x!=='Tidak tersedia'));
+    const city=first(preferred.city,successful.map(t=>t.data.city).find(x=>x && x!=='Tidak tersedia'));
+    const org=first(preferred.org,successful.map(t=>t.data.org).find(Boolean));
+    const asn=first(preferred.asn,successful.map(t=>t.data.asn).find(Boolean));
+    const lat=first(preferred.lat,successful.map(t=>t.data.lat).find(v=>v!==undefined));
+    const lon=first(preferred.lon,successful.map(t=>t.data.lon).find(v=>v!==undefined));
+    const timezone=first(preferred.timezone,successful.map(t=>t.data.timezone).find(Boolean));
+    const postal=first(preferred.postal,successful.map(t=>t.data.postal).find(Boolean));
+    const continent=first(preferred.continent,successful.map(t=>t.data.continent).find(Boolean));
+    currentIP=resolvedIP;
+    $('resultIp').textContent=resolvedIP;
+    $('resultLocation').textContent=[city,region,country].filter(x=>x!=='Tidak tersedia').join(', ')||'Informasi lokasi tidak tersedia';
+    $('countryPill').textContent='◉ '+country;
+    $('detailGrid').innerHTML=[
+      addCard('COUNTRY / NEGARA',country,first(preferred.countryCode)),
+      addCard('REGION / PROVINSI',region,'Nama wilayah ditampilkan dengan padanan Indonesia/Inggris bila tersedia'),
+      addCard('CITY / KOTA',city),
+      addCard('ORG / ISP',org),
+      addCard('ASN',asn),
+      addCard('NETWORK / CONTINENT',continent),
+      addCard('TIME ZONE / ZONA WAKTU',timezone),
+      addCard('POSTAL CODE / KODE POS',postal),
+      addCard('COORDINATES / KOORDINAT',`${lat}, ${lon}`,(lat!=='Tidak tersedia'&&lon!=='Tidak tersedia')?'Perkiraan geolokasi':'')
+    ].join('');
+    $('sourceGrid').innerHTML=liveProviders.map((p,i)=>sourceCard(p,tasks[i])).join('');
+    if(successful.length===0){
+      $('resultLocation').textContent='Tidak ada provider yang berhasil memberikan data.';
+      $('countryPill').textContent='⚠ Tidak tersedia';
+      showNotice('Semua provider gagal. Periksa koneksi dan API key di backend.','error');
+    }else{
+      showNotice(`${successful.length} dari ${liveProviders.length} provider berhasil. Provider yang memerlukan API key akan aktif setelah key ditambahkan di pengaturan server.`,'info');
+    }
+  }catch(e){
+    showNotice('Backend belum aktif atau tidak bisa dijangkau. Jalankan server.js lalu buka website melalui alamat server, bukan dengan membuka file HTML langsung.','error');
+    $('resultLocation').textContent='Tidak bisa terhubung ke backend.';
+  }finally{
+    lookupBtn.disabled=false;$('myIpBtn').disabled=false;lookupBtn.textContent='Periksa Alamat ↗';
+  }
+}
+const originalLookup=lookup;
+lookup=async function(raw){
+  if(String(raw).trim().toLowerCase()==='self'){
+    clearNotice();showNotice('Mendeteksi IP publik...','info');
+    try{
+      const own=await fetchJSON('https://api.ipify.org?format=json');
+      input.value=own.ip;
+      await originalLookup(own.ip);
+    }catch(e){input.value='';showNotice('Gagal mendeteksi IP publik. Masukkan IP secara manual.','error');}
+  }else await originalLookup(raw);
+};
+form.addEventListener('submit',e=>{e.preventDefault();lookup(input.value);});
+$('myIpBtn').addEventListener('click',()=>{input.value='';lookup('self');});
+$('clearBtn').addEventListener('click',()=>{input.value='';$('results').style.display='none';clearNotice();input.focus();});
+$('copyBtn').addEventListener('click',async()=>{
+  if(!currentIP)return;
+  try{await navigator.clipboard.writeText(currentIP);$('copyBtn').textContent='Tersalin ✓';setTimeout(()=>$('copyBtn').textContent='Salin IP',1600);}
+  catch(e){const t=document.createElement('textarea');t.value=currentIP;document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();$('copyBtn').textContent=ok?'Tersalin ✓':'Salin manual';setTimeout(()=>$('copyBtn').textContent='Salin IP',1600);}
+});
+</script>
+</body>
+</html>
